@@ -19,6 +19,8 @@ public class InboxApp {
 	public String user(@AuthenticationPrincipal OAuth2User principal) {
 		System.out.println(principal);
 		return principal.getAttribute("name");
+
+
 	}
 	
 
