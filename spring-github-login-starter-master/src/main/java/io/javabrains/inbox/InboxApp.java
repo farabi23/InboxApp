@@ -1,6 +1,8 @@
 package io.javabrains.inbox;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
+import io.javabrains.inbox.email.Email;
+import io.javabrains.inbox.email.EmailRepository;
 import io.javabrains.inbox.emaillist.EmailListItem;
 import io.javabrains.inbox.emaillist.EmailListItemKey;
 import io.javabrains.inbox.emaillist.EmailListItemRepository;
@@ -23,10 +25,12 @@ import java.util.Arrays;
 @RestController
 public class InboxApp {
 
-
 	@Autowired FolderRepository folderRepository;
 
 	@Autowired EmailListItemRepository emailListItemRepository;
+
+	@Autowired
+	EmailRepository emailRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(InboxApp.class, args);
@@ -46,11 +50,9 @@ public class InboxApp {
 	@PostConstruct
 	public void init(){
 
-
 		folderRepository.save( new Folder("farabi23", "Inbox", "blue"));
 
 		folderRepository.save( new Folder("farabi23", "Sent", "green"));
-
 
 		folderRepository.save( new Folder("farabi23", "Important", "yellow"));
 
@@ -63,11 +65,19 @@ public class InboxApp {
 
 			EmailListItem item = new EmailListItem();
 			item.setKey(key);
-			item.setTo(Arrays.asList("farabi23"));
+			item.setTo(Arrays.asList("farabi23", "abc", "def"));
 			item.setSubject("Subject " + i);
 			item.setUnread(true);
 
 			emailListItemRepository.save(item);
+
+			Email email = new Email();
+			email.setId(key.getTimeUUID());
+			email.setFrom("farabi23");
+			email.setSubject(item.getSubject());
+			email.setBody("Body " + i);
+			email.setTo(item.getTo());
+			emailRepository.save(email);
 
 		}
 	}
