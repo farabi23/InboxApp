@@ -55,6 +55,7 @@ public class InboxController {
         if(!StringUtils.hasText(folder)){
             folder = "Inbox";
         }
+        model.addAttribute("folderName", folder);
 
         String folderlabel = "Inbox";
         List<EmailListItem> emailList =
