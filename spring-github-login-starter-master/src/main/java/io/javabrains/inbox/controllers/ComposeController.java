@@ -1,5 +1,6 @@
 package io.javabrains.inbox.controllers;
 
+import io.javabrains.inbox.email.Email;
 import io.javabrains.inbox.email.EmailRepository;
 import io.javabrains.inbox.email.EmailService;
 import io.javabrains.inbox.emaillist.EmailListItemRepository;
@@ -16,9 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -32,6 +31,7 @@ public class ComposeController {
     @GetMapping(value = "/compose")
     public String getComposePage(
             @RequestParam(required = false) String to,
+            @RequestParam(required = false) UUID id,
             @AuthenticationPrincipal OAuth2User principal
             , Model model){
 
@@ -56,8 +56,29 @@ public class ComposeController {
 
             List<String> uniqueToIds = splitIds(to);
             model.addAttribute("toIds", String.join(", ", uniqueToIds));
-            return "compose-page";
+
+
+        if (id != null) { // Ensure 'id' is not null
+            Optional<Email> optionalEmail = emailRepository.findById(id);
+            if (optionalEmail.isPresent()) {
+                Email email = optionalEmail.get();
+                if (emailService.doesHaveAccess(email, userId)) {
+                    model.addAttribute("subject", emailService.getReplySubject(email.getSubject()));
+                    model.addAttribute("body", emailService.getReplyBody(email));
+                }
+                System.out.println("Email Subject: " + emailService.getReplySubject(email.getSubject()));
+                System.out.println("Email Body: " + emailService.getReplyBody(email));
+                System.out.println("Email To: " + email.getTo());
+
+            }
+
+        }
+
+
+
+        return "compose-page";
     }
+
 
     private static List<String> splitIds(String to) {
         if(!StringUtils.hasText(to)) {
@@ -72,6 +93,9 @@ public class ComposeController {
                  .collect(Collectors.toList());
         return uniqueToIds;
     }
+
+
+
 
     @PostMapping("/sendEmail")
     public ModelAndView sendEmail(

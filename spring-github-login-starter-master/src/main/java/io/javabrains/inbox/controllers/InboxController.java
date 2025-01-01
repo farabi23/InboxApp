@@ -57,13 +57,6 @@ public class InboxController {
 
         model.addAttribute("stats", folderService.mapCountToLabels(userId));
 
-
-        System.out.println("User Name: " + principal.getAttribute("name"));
-        System.out.println("Attributes: " + principal.getAttributes());
-
-
-
-
         //Fetch messages
         if(!StringUtils.hasText(folder)){
             folder = "Inbox";

@@ -39,7 +39,22 @@ public class EmailService {
         emailListItemRepository.save(sentItemsEntry);
     }
 
+    public boolean doesHaveAccess(Email email, String userId){
+        return (userId.equals(email.getFrom()) || email.getTo().contains(userId));
 
+    }
+
+    public String getReplySubject(String subject){
+        return "Re: " + subject;
+    }
+
+    public String getReplyBody(Email email){
+        return "\n\n\n------------------------------------------ \n "+
+                "From: " + email.getFrom() + "\n" +
+                "To: " + email.getTo() + "\n\n" +
+                email.getBody();
+
+    }
 
     private static EmailListItem createEmailListItem(List<String> to, String subject, String itemOwner, Email email, String folder) {
         EmailListItemKey key = new EmailListItemKey();

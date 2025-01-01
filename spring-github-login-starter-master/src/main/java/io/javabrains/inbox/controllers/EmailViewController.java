@@ -3,6 +3,7 @@ package io.javabrains.inbox.controllers;
 
 import io.javabrains.inbox.email.Email;
 import io.javabrains.inbox.email.EmailRepository;
+import io.javabrains.inbox.email.EmailService;
 import io.javabrains.inbox.emaillist.EmailListItem;
 import io.javabrains.inbox.emaillist.EmailListItemKey;
 import io.javabrains.inbox.emaillist.EmailListItemRepository;
@@ -32,6 +33,7 @@ public class EmailViewController {
     @Autowired private EmailListItemRepository emailListItemRepository;
     @Autowired private EmailRepository emailRepository;
     @Autowired private UnreadEmailStatsRepository unreadEmailStatsRepository;
+    @Autowired private EmailService emailService;
 
 
 
@@ -60,7 +62,7 @@ public class EmailViewController {
         model.addAttribute("userName", userName);
 
         Optional<Email> optionalEmail = emailRepository.findById(id);
-        if(!optionalEmail.isPresent()){
+        if(optionalEmail.isEmpty()){
         return "inbox-page";
         }
 
@@ -68,7 +70,7 @@ public class EmailViewController {
         String toIds = String.join(", ", email.getTo());
 
         //Check if user is allowed to see the email
-        if(!userId.equals(email.getFrom()) && !email.getTo().contains(userId)){
+        if(!emailService.doesHaveAccess(email, userId)){
             return "redirect:/";
         }
 
