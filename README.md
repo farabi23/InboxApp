@@ -1,4 +1,3 @@
-
 # Messaging App - Spring Boot Project
 
 ## Overview
@@ -76,6 +75,30 @@ The project follows the standard Maven directory structure:
    ```
 
 5. **Access the Application**: Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
+
+## Environment Setup
+
+Before running the application, set up the following environment variables:
+
+```properties
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_username
+DB_PASS=your_password
+DB_NAME=messaging_app
+SECRET_KEY=your_secret_key
+ALGORITHM=HS256
+```
+
+- **DB_HOST**: Database host.
+- **DB_PORT**: Port number for the database.
+- **DB_USER**: Database username.
+- **DB_PASS**: Database password.
+- **DB_NAME**: Database name.
+- **SECRET_KEY**: Secret key for token generation.
+- **ALGORITHM**: Algorithm for encoding tokens.
+
+Create a `.env` file in the root directory with the above keys.
 
 ## Usage
 
