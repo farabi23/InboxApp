@@ -97,6 +97,4 @@ The project follows the standard Maven directory structure:
 - Implement a search functionality for emails.
 - Improve responsiveness for mobile devices.
 
-## Author
 
-Developed by Farabi Seilbek.
