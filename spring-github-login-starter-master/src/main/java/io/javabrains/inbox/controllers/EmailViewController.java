@@ -53,6 +53,12 @@ public class EmailViewController {
         List<Folder> defaultFolders = folderService.fetchDefaultFolders(userId);
         model.addAttribute("defaultFolders", defaultFolders);
 
+        String userName = principal.getAttribute("name");
+        if(!StringUtils.hasText(userName)){
+            userName = principal.getAttribute("login"); //fall back to login, if the user has no name on github
+        }
+        model.addAttribute("userName", userName);
+
         Optional<Email> optionalEmail = emailRepository.findById(id);
         if(!optionalEmail.isPresent()){
         return "inbox-page";
@@ -60,6 +66,12 @@ public class EmailViewController {
 
         Email email = optionalEmail.get();
         String toIds = String.join(", ", email.getTo());
+
+        //Check if user is allowed to see the email
+        if(!userId.equals(email.getFrom()) && !email.getTo().contains(userId)){
+            return "redirect:/";
+        }
+
         model.addAttribute("email", email);
         model.addAttribute("toIds", toIds);
 

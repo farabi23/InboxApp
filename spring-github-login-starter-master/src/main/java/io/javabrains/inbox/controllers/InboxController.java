@@ -49,7 +49,20 @@ public class InboxController {
         List<Folder> defaultFolders = folderService.fetchDefaultFolders(userId);
         model.addAttribute("defaultFolders", defaultFolders);
 
+        String userName = principal.getAttribute("name");
+        if(!StringUtils.hasText(userName)){
+            userName = principal.getAttribute("login"); //fall back to login, if the user has no name on github
+        }
+        model.addAttribute("userName", userName);
+
         model.addAttribute("stats", folderService.mapCountToLabels(userId));
+
+
+        System.out.println("User Name: " + principal.getAttribute("name"));
+        System.out.println("Attributes: " + principal.getAttributes());
+
+
+
 
         //Fetch messages
         if(!StringUtils.hasText(folder)){
